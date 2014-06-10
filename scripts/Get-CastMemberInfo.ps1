@@ -26,11 +26,21 @@ param (
       return (New-Object PSObject -Property @{Message="No results found for name: $name"})
     } else {
       $person = $response.results[0]
+      if($response.total_results -gt 1) {
+        #too many results found!
+        Write-Verbose "Found $($response.total_results) matches for name: $name`n$($response.results | Out-String)"
+      }
+
       $url = $tmdbPersonUrlFmt -f $person.id,$apiKey
       $info = Invoke-RestMethod $url
+      #todo add better logic for getting more accurate cast member details
+      if([string]::IsNullOrEmpty($info.birthday) -and ($response.total_results -gt 1)) {
+        $url = $tmdbPersonUrlFmt -f $response.results[1].id,$apiKey
+        $info = Invoke-RestMethod $url
+      }
 
       if([string]::IsNullOrEmpty($info.birthday)) {
-        Write-Verbose "no age found for $name"
+        Write-Warning "no age found for $name"
       } else {
         $span = [DateTime]::Now - (Get-Date $info.birthday)
         $age = (New-Object DateTime -ArgumentList $Span.Ticks).Year - 1
