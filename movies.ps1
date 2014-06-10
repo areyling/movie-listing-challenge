@@ -16,3 +16,12 @@ function Load-Config($path) {
 $config = Load-Config (Join-Path $scriptPath 'config.json')
 if(-not $config) { throw 'Invalid config! Please see the README for details on how to set up these scripts.'; return; }
 Write-Verbose "config: $($config)"
+
+#load our helper scripts
+$helpersPath = Join-Path $scriptPath 'scripts'
+Write-Verbose "loading helper scripts from: $helpersPath"
+if(-not (Test-Path $helpersPath)) { throw 'helpers not found!'; return; }
+Get-ChildItem $helpersPath -include *.ps1 -recurse | %{
+  Write-Verbose " .. loading $($_.FullName)"
+  . $_.FullName
+}
