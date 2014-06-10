@@ -26,4 +26,15 @@ Get-ChildItem $helpersPath -include *.ps1 -recurse | %{
   . $_.FullName
 }
 
-Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast
+$result = Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast
+$listing = $result.movies | %{
+  $movie = $_
+
+  Write-Verbose "getting cast info for: $($movie.title)"
+  $castInfo = $movie.cast | %{
+    Write-Verbose " .. cast member: $($_.name)"
+    Get-CastMemberInfo $config.tmdbKey -name $_.name
+  }
+  $movie | Add-Member -MemberType NoteProperty -Name castInfo -Value $castInfo -passThru
+}
+$listing
