@@ -30,11 +30,22 @@ $result = Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast
 $listing = $result.movies | %{
   $movie = $_
 
+  $numCastMembers = 0
+  $totalAge = 0
   Write-Verbose "getting cast info for: $($movie.title)"
   $castInfo = $movie.cast | %{
     Write-Verbose " .. cast member: $($_.name)"
-    Get-CastMemberInfo $config.tmdbKey -name $_.name
+    $person = Get-CastMemberInfo $config.tmdbKey -name $_.name
+    if($person.ageDays) {
+      $totalAge += $person.ageDays
+      $numCastMembers++
+    }
+    $person
   }
-  $movie | Add-Member -MemberType NoteProperty -Name castInfo -Value $castInfo -passThru
+  $movie | Add-Member -MemberType NoteProperty -Name castInfo -Value $castInfo
+
+  $ageDaysAvg = [int][Math]::Round($totalAge/$numCastMembers)
+  $ageAvg = New-Object DateTime -ArgumentList (New-TimeSpan -Days $ageDaysAvg).Ticks
+  $movie | Add-Member -MemberType NoteProperty -Name AverageCastAge -Value ($ageAvg.Year - 1) -PassThru
 }
 $listing
