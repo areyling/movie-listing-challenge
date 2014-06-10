@@ -26,4 +26,4 @@ Get-ChildItem $helpersPath -include *.ps1 -recurse | %{
   . $_.FullName
 }
 
-Get-TheaterMovies $config.rottenTomatoesKey
+Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast
