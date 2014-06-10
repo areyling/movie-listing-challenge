@@ -25,3 +25,5 @@ Get-ChildItem $helpersPath -include *.ps1 -recurse | %{
   Write-Verbose " .. loading $($_.FullName)"
   . $_.FullName
 }
+
+Get-TheaterMovies $config.rottenTomatoesKey
