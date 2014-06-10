@@ -57,6 +57,6 @@ param (
       Detail = $record.ErrorDetails.Message
       Url = $url
     }
-    return $err
+    return New-Object PSObject -Property @{Error=$err}
   }
 }

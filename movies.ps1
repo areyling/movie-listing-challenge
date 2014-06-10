@@ -27,6 +27,12 @@ Get-ChildItem $helpersPath -include *.ps1 -recurse | %{
 }
 
 $result = Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast
+if($result.Error) {
+  $err = $result.Error
+  Write-Error -Exception $err.Exception -Message $err.Message -TargetObject $result
+  return
+}
+
 $listing = $result.movies | %{
   $movie = $_
 
@@ -36,11 +42,16 @@ $listing = $result.movies | %{
   $castInfo = $movie.cast | %{
     Write-Verbose " .. cast member: $($_.name)"
     $person = Get-CastMemberInfo $config.tmdbKey -name $_.name
-    if($person.ageDays) {
-      $totalAge += $person.ageDays
-      $numCastMembers++
+    if($person.Error) {
+      $target = New-Object PSObject -Property @{OriginalMember=$_; Error=$person.Error}
+      Write-Error -Exception $err.Exception -Message $err.Message -TargetObject $target
+    } else {
+      if($person.ageDays) {
+        $totalAge += $person.ageDays
+        $numCastMembers++
+      }
+      $person
     }
-    $person
   }
   $movie | Add-Member -MemberType NoteProperty -Name castInfo -Value $castInfo
 
