@@ -1,4 +1,4 @@
-movie-listing-challenge
+Movie listing challenge
 =======================
 
-Lists movies currently in theaters, with the average age of the cast.
+Lists movies currently in theaters, and finds the average age of the cast.
