@@ -1,5 +1,6 @@
 {
   "rottenTomatoesKey": "YOUR_ROTTEN_TOMATOES_API_KEY",
   "tmdbKey": "YOUR_TMDB_API_KEY",
-  "fullCast": false
+  "fullCast": false,
+  "pageSize": 4
 }

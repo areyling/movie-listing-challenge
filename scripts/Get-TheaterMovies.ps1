@@ -16,7 +16,6 @@ param (
   [int] $page = 1,
 
   [Parameter(Mandatory=$false)]
-  [ValidateScript({ $_ -ge 1 })]
   [Alias('l','limit')]
   [int] $pageLimit = 16,
 
@@ -25,6 +24,8 @@ param (
 )
 
   try {
+    if($pageLimit -lt 1) { $pageLimit = 16 }
+
     $url = $moviesUrlFmt -f $apiKey,$page,$pageLimit
     $response = Invoke-RestMethod $url
 

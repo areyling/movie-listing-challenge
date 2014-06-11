@@ -26,7 +26,7 @@ Get-ChildItem $helpersPath -include *.ps1 -recurse | %{
   . $_.FullName
 }
 
-$result = Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast
+$result = Get-TheaterMovies $config.rottenTomatoesKey -fullCast $config.fullCast -limit $config.pageSize
 if($result.Error) {
   $err = $result.Error
   Write-Error -Exception $err.Exception -Message $err.Message -TargetObject $result
