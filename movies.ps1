@@ -1,5 +1,7 @@
 [CmdletBinding()]
-param ()
+param (
+  [switch] $passThru
+)
 
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
@@ -33,7 +35,7 @@ if($result.Error) {
   return
 }
 
-$listing = $result.movies | %{
+$result.movies | %{
   $movie = $_
 
   $numCastMembers = 0
@@ -57,6 +59,20 @@ $listing = $result.movies | %{
 
   $ageDaysAvg = [int][Math]::Round($totalAge/$numCastMembers)
   $ageAvg = New-Object DateTime -ArgumentList (New-TimeSpan -Days $ageDaysAvg).Ticks
-  $movie | Add-Member -MemberType NoteProperty -Name AverageCastAge -Value ($ageAvg.Year - 1) -PassThru
+  $movie | Add-Member -MemberType NoteProperty -Name AverageCastAge -Value ($ageAvg.Year - 1)
+
+  if($passThru.IsPresent) {
+    $movie
+  } else {
+    #format a summary of the movie and its cast
+    '{0} ({1}, {2} min., average age {3})' -f $movie.title,$movie.mpaa_rating,$movie.runtime,$movie.AverageCastAge
+    $movie.castInfo | Sort name | %{
+      if($_.age -gt 0) {
+        '   {0} is {1} years old.' -f $_.name,$_.age,$_.birthday
+      } else {
+        '   {0} (age unknown).' -f $_.name
+      }
+    }
+    '' #add a single line of spacing in between movies
+  }
 }
-$listing

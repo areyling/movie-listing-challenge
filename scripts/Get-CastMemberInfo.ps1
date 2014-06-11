@@ -40,7 +40,7 @@ param (
       }
 
       if([string]::IsNullOrEmpty($info.birthday)) {
-        Write-Warning "no age found for $name"
+        Write-Verbose "no age found for $name"
       } else {
         $span = [DateTime]::Now - (Get-Date $info.birthday)
         $age = (New-Object DateTime -ArgumentList $Span.Ticks).Year - 1
