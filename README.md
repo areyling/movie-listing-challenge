@@ -18,9 +18,7 @@ the API section under your [account info](https://www.themoviedb.org/account))
 directory and name it `config.json`. 
 2. Edit `config.json`, replacing `YOUR_ROTTEN_TOMATOES_API_KEY` and `YOUR_TMDB_API_KEY` with
 your valid API keys.
-3. Open a PowerShell prompt to the root of your local repo copy and run `movies.ps1`:
-
-		PS> &.\movies.ps1
+3. Run `movies.bat`. Alternatively, you can run the `movies.ps1` script directly.
 
 ## Development
 
